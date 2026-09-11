@@ -26,17 +26,18 @@ export default function ModelsPage() {
       {/* Hero 区域 */}
       <div
         style={{
-          background: "linear-gradient(135deg, #0f2e1a 0%, #0f1f2e 100%)",
+          background: "linear-gradient(135deg, #0958d9 0%, #003eb3 100%)",
           borderRadius: 12,
-          padding: "32px 24px",
+          padding: "28px 24px",
           marginBottom: 20,
-          border: "1px solid #1a4e2a",
+          color: "#fff",
+          boxShadow: "0 4px 12px rgba(9,88,217,0.15)",
         }}
       >
         <Typography.Title level={3} style={{ color: "#fff", margin: 0 }}>
           模型中心
         </Typography.Title>
-        <Typography.Text style={{ color: "rgba(255,255,255,0.5)" }}>
+        <Typography.Text style={{ color: "rgba(255,255,255,0.85)" }}>
           动态管理多通道 AI 模型网关，支持 BaseURL 自定义和模型切换
         </Typography.Text>
       </div>
@@ -46,17 +47,18 @@ export default function ModelsPage() {
           <Col key={m.id} xs={24} sm={12}>
             <Card
               style={{
-                background: m.active ? "linear-gradient(135deg, #1a2a3e 0%, #1f1f2e 100%)" : "#1f1f1f",
-                border: m.active ? "1px solid #1677ff" : "1px solid #2a2a2a",
-                borderRadius: 12,
+                background: "#ffffff",
+                border: m.active ? "2px solid #1677ff" : "1px solid #e5e7eb",
+                borderRadius: 10,
+                boxShadow: m.active ? "0 4px 12px rgba(22,119,255,0.08)" : undefined,
               }}
-              bodyStyle={{ padding: 20 }}
+              styles={{ body: { padding: 20 } }}
             >
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
                 <div>
                   <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
-                    <RobotOutlined style={{ color: m.active ? "#1677ff" : "#666", fontSize: 18 }} />
-                    <Typography.Text strong style={{ color: "#fff", fontSize: 15 }}>
+                    <RobotOutlined style={{ color: m.active ? "#1677ff" : "#9ca3af", fontSize: 18 }} />
+                    <Typography.Text strong style={{ color: "#111827", fontSize: 15 }}>
                       {m.name}
                     </Typography.Text>
                     {m.active && <Tag color="blue">主力模型</Tag>}

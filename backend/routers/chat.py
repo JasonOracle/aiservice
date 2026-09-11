@@ -70,6 +70,32 @@ def chat(
 
     reply = _generate_reply_sync(current_user.id, req.message, current_user.traits or "")
 
+    # 实时广播至 B 端坐席控制台
+    try:
+        from routers.ws import manager
+        loop = asyncio.get_event_loop() if asyncio.get_event_loop().is_running() else None
+        # 用户提问与 AI 回答广播
+        broadcast_user = {
+            "type": "chat_stream",
+            "user_id": str(current_user.id),
+            "user_name": current_user.name or f"用户{current_user.phone[-4:]}",
+            "user_phone": current_user.phone,
+            "role": "user",
+            "content": req.message,
+        }
+        broadcast_ai = {
+            "type": "chat_stream",
+            "user_id": str(current_user.id),
+            "user_name": current_user.name or f"用户{current_user.phone[-4:]}",
+            "user_phone": current_user.phone,
+            "role": "assistant",
+            "content": reply,
+        }
+        asyncio.run(manager.broadcast_to_agents(broadcast_user))
+        asyncio.run(manager.broadcast_to_agents(broadcast_ai))
+    except Exception as e:
+        print(f"[Warning] Broadcast to agent failed: {e}")
+
     rag_results = RAGEngine.search(req.message, top_k=3)
     sources = [
         ChatSource(filename=r["filename"], relevance=round(r["relevance"], 2))

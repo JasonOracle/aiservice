@@ -37,3 +37,24 @@ def machine_ip():
     - 返回: { ip: "192.168.x.x" }
     """
     return MachineIP(ip=get_lan_ip())
+
+
+@router.get("/users")
+def get_users():
+    """返回全部种子用户列表供 B 端坐席显示"""
+    from database import SessionLocal
+    from models import User
+    db = SessionLocal()
+    try:
+        users = db.query(User).all()
+        return [
+            {
+                "id": u.id,
+                "phone": u.phone,
+                "name": u.name or f"用户{u.phone[-4:]}",
+                "traits": u.traits or "",
+            }
+            for u in users
+        ]
+    finally:
+        db.close()

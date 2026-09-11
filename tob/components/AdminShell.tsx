@@ -23,21 +23,21 @@ export default function AdminShell() {
   const [activeKey, setActiveKey] = useState("kb");
 
   return (
-    <Layout style={{ minHeight: "100vh" }}>
+    <Layout style={{ minHeight: "100vh", background: "#f0f2f5" }}>
       <Sider
         width={220}
         style={{
-          background: "#141414",
-          borderRight: "1px solid #2a2a2a",
+          background: "#ffffff",
+          borderRight: "1px solid #e5e7eb",
           display: "flex",
           flexDirection: "column",
         }}
       >
-        <div style={{ padding: "20px 16px", borderBottom: "1px solid #2a2a2a" }}>
-          <Typography.Text strong style={{ color: "#fff", fontSize: 16 }}>
+        <div style={{ padding: "20px 16px", borderBottom: "1px solid #f0f0f0" }}>
+          <Typography.Text strong style={{ color: "#111827", fontSize: 16 }}>
             AI 客服后台
           </Typography.Text>
-          <div style={{ color: "#666", fontSize: 12, marginTop: 4 }}>
+          <div style={{ color: "#6b7280", fontSize: 12, marginTop: 4 }}>
             Admin Console
           </div>
         </div>
@@ -45,28 +45,28 @@ export default function AdminShell() {
           mode="inline"
           selectedKeys={[activeKey]}
           onClick={(e) => setActiveKey(e.key)}
-          style={{ border: "none", background: "transparent" }}
+          style={{ border: "none", background: "#ffffff" }}
           items={MENU_ITEMS}
         />
       </Sider>
 
-      <Layout style={{ background: "#141414" }}>
+      <Layout style={{ background: "#f0f2f5" }}>
         <Header
           style={{
-            background: "#141414",
-            borderBottom: "1px solid #2a2a2a",
+            background: "#ffffff",
+            borderBottom: "1px solid #e5e7eb",
             padding: "0 24px",
             display: "flex",
             alignItems: "center",
             height: 56,
           }}
         >
-          <Typography.Text style={{ color: "#fff", fontSize: 15, fontWeight: 600 }}>
+          <Typography.Text style={{ color: "#111827", fontSize: 15, fontWeight: 600 }}>
             {MENU_ITEMS.find((m) => m.key === activeKey)?.label}
           </Typography.Text>
         </Header>
 
-        <Content style={{ padding: 24, background: "#141414" }}>
+        <Content style={{ padding: 24, background: "#f0f2f5" }}>
           {activeKey === "kb" && <KBPage />}
           {activeKey === "models" && <ModelsPage />}
           {activeKey === "agent" && <AgentPage />}

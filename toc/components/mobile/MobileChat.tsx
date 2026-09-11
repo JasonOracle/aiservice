@@ -1,12 +1,20 @@
-// 移动端 AI 聊天室：全屏沉浸式，输入框吸底
+/**
+ * [变更日志]
+ * 修改时间：2026-09-12
+ * AI模型：Gemini 系列
+ * 修改内容：
+ * 1. 移动端同步接入 WebSocket /ws/c/{user_id} 实时双向通信，实时接收人工客服消息
+ * 2. 增加 agent 角色展示，与 AI 回复进行明确的视觉区分（增加人工客服绿标）
+ * 3. 严格遵循副作用清理规范，在组件卸载时显式关闭 WebSocket
+ */
 "use client";
 import { useState, useRef, useEffect } from "react";
-import { NavBar, TextArea, Button } from "antd-mobile";
+import { NavBar, TextArea, Button, Tag } from "antd-mobile";
 import { SendOutline, LeftOutline } from "antd-mobile-icons";
-import { getAuthHeaders, API_URL } from "@/lib/api";
+import { getAuthHeaders, API_URL, WS_URL } from "@/lib/api";
 
 interface ChatMsg {
-  role: "user" | "assistant";
+  role: "user" | "assistant" | "agent";
   content: string;
 }
 
@@ -17,10 +25,45 @@ export default function MobileChat({ onBack }: { onBack: () => void }) {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const wsRef = useRef<WebSocket | null>(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  // 挂载 WebSocket 实时监听人工客服消息下发
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const userId = localStorage.getItem("user_id") || "1";
+    const wsUrl = WS_URL.replace("http://", "ws://");
+    let ws: WebSocket;
+    try {
+      ws = new WebSocket(`${wsUrl}/ws/c/${userId}`);
+      ws.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          if (data.type === "agent_reply") {
+            setMessages((prev) => [
+              ...prev,
+              { role: "agent", content: data.content },
+            ]);
+          }
+        } catch {
+          // 容错
+        }
+      };
+      wsRef.current = ws;
+    } catch {
+      // 容错
+    }
+
+    return () => {
+      if (wsRef.current) {
+        wsRef.current.close();
+        wsRef.current = null;
+      }
+    };
+  }, []);
 
   const handleSend = async () => {
     const text = input.trim();
@@ -74,16 +117,22 @@ export default function MobileChat({ onBack }: { onBack: () => void }) {
         AI 智能助手
       </NavBar>
 
-      <div style={{ flex: 1, overflow: "auto", padding: 12 }}>
+      <div style={{ flex: 1, overflow: "auto", padding: 12, paddingBottom: 80 }}>
         {messages.map((m, i) => (
           <div
             key={i}
             style={{
               display: "flex",
-              justifyContent: m.role === "user" ? "flex-end" : "flex-start",
+              flexDirection: "column",
+              alignItems: m.role === "user" ? "flex-end" : "flex-start",
               marginBottom: 12,
             }}
           >
+            {m.role === "agent" && (
+              <div style={{ marginBottom: 4 }}>
+                <Tag color="success">人工客服</Tag>
+              </div>
+            )}
             <div
               style={{
                 maxWidth: "78%",

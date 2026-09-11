@@ -2,7 +2,7 @@
 // 根据 User-Agent 动态加载 MobileView 或 DesktopView
 "use client";
 
-import { Suspense, lazy, useEffect } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Spin } from "antd";
 
@@ -19,29 +19,47 @@ function detectDevice(): "mobile" | "desktop" {
 
 export default function AdaptiveShell() {
   const router = useRouter();
-  const device = detectDevice();
+  const [mounted, setMounted] = useState(false);
+  const [hasToken, setHasToken] = useState(false);
+  const [device, setDevice] = useState<"mobile" | "desktop">("desktop");
 
-  // 认证守卫：未登录则跳转登录页
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    setMounted(true);
+    setDevice(detectDevice());
     const token = localStorage.getItem("token");
     if (!token) {
-      router.push("/login");
+      router.replace("/login");
+    } else {
+      setHasToken(true);
     }
   }, [router]);
 
-  // 未登录时不渲染主体，避免闪现
-  const hasToken = typeof window !== "undefined" && !!localStorage.getItem("token");
+  if (!mounted) {
+    return (
+      <div style={{ height: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#f8f9fa" }}>
+        <Spin size="large" />
+      </div>
+    );
+  }
+
+  if (!hasToken) {
+    return (
+      <div style={{ height: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", background: "#0f0f1a", color: "#fff" }}>
+        <Spin size="large" />
+        <div style={{ marginTop: 16, color: "#888" }}>正在跳转至登录页面...</div>
+      </div>
+    );
+  }
 
   return (
     <Suspense
       fallback={
-        <div className="flex h-screen items-center justify-center bg-gray-50">
+        <div style={{ height: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#f8f9fa" }}>
           <Spin size="large" />
         </div>
       }
     >
-      {hasToken ? (device === "mobile" ? <MobileView /> : <DesktopView />) : <Spin style={{ width: "100%", height: "100dvh", display: "flex", alignItems: "center", justifyContent: "center" }} />}
+      {device === "mobile" ? <MobileView /> : <DesktopView />}
     </Suspense>
   );
 }

@@ -10,6 +10,7 @@ services:
       - UPLOAD_DIR=/app/uploads
       - JWT_SECRET=aiservice-mvp-secret-key-change-in-production
     volumes:
+      - ./backend:/app
       - backend_data:/app/data
       - backend_uploads:/app/uploads
     restart: unless-stopped
@@ -25,6 +26,11 @@ services:
     environment:
       - NEXT_PUBLIC_API_URL=http://localhost:8080
       - NEXT_PUBLIC_WS_URL=ws://localhost:8080
+      - WATCHPACK_POLLING=true
+    volumes:
+      - ./toc:/app
+      - /app/node_modules
+      - /app/.next
     depends_on:
       - backend
     restart: unless-stopped
@@ -41,6 +47,11 @@ services:
       - NEXT_PUBLIC_API_URL=http://localhost:8080
       - NEXT_PUBLIC_WS_URL=ws://localhost:8080
       - ADMIN_PASS=admin123
+      - WATCHPACK_POLLING=true
+    volumes:
+      - ./tob:/app
+      - /app/node_modules
+      - /app/.next
     depends_on:
       - backend
     restart: unless-stopped

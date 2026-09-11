@@ -13,6 +13,13 @@ from memory import MemoryManager
 # 建表
 Base.metadata.create_all(bind=engine, tables=[User.__table__])
 
+# 启动时自动初始化 10 个测试种子用户（如未初始化）
+try:
+    from scripts.seed import seed
+    seed()
+except Exception as e:
+    print(f"[Warning] Auto seed users skipped or failed: {e}")
+
 app = FastAPI(title="AI 客服 MVP - Backend", version="1.0.0")
 
 # 配置全局 CORS，允许一切来源跨域

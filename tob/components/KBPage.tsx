@@ -37,7 +37,7 @@ const columns: ColumnsType<DocItem> = [
         ) : (
           <FileWordOutlined style={{ color: "#1677ff" }} />
         )}
-        <span style={{ color: "#fff" }}>{name}</span>
+        <span style={{ color: "#1f1f1f", fontWeight: 500 }}>{name}</span>
       </span>
     ),
   },
@@ -74,17 +74,18 @@ export default function KBPage() {
       {/* Hero 区域 */}
       <div
         style={{
-          background: "linear-gradient(135deg, #1a1a4e 0%, #0f0f2e 100%)",
+          background: "linear-gradient(135deg, #1677ff 0%, #0958d9 100%)",
           borderRadius: 12,
-          padding: "32px 24px",
+          padding: "28px 24px",
           marginBottom: 20,
-          border: "1px solid #2a2a5e",
+          color: "#fff",
+          boxShadow: "0 4px 12px rgba(22,119,255,0.15)",
         }}
       >
         <Typography.Title level={3} style={{ color: "#fff", margin: 0 }}>
           知识库大盘
         </Typography.Title>
-        <Typography.Text style={{ color: "rgba(255,255,255,0.5)" }}>
+        <Typography.Text style={{ color: "rgba(255,255,255,0.85)" }}>
           管理 AI 客服的知识来源，支持 PDF / Word 文档上传和实时切片
         </Typography.Text>
       </div>
@@ -92,7 +93,7 @@ export default function KBPage() {
       {/* 指标卡片 */}
       <Row gutter={[16, 16]} style={{ marginBottom: 20 }}>
         <Col xs={24} sm={8}>
-          <Card style={{ background: "#1f1f1f", border: "1px solid #2a2a2a" }} bodyStyle={{ padding: 20 }}>
+          <Card style={{ background: "#ffffff", border: "1px solid #e5e7eb", borderRadius: 10 }} styles={{ body: { padding: 20 } }}>
             <Typography.Text type="secondary" style={{ fontSize: 13 }}>
               文档总数
             </Typography.Text>
@@ -100,7 +101,7 @@ export default function KBPage() {
           </Card>
         </Col>
         <Col xs={24} sm={8}>
-          <Card style={{ background: "#1f1f1f", border: "1px solid #2a2a2a" }} bodyStyle={{ padding: 20 }}>
+          <Card style={{ background: "#ffffff", border: "1px solid #e5e7eb", borderRadius: 10 }} styles={{ body: { padding: 20 } }}>
             <Typography.Text type="secondary" style={{ fontSize: 13 }}>
               总切片数
             </Typography.Text>
@@ -108,7 +109,7 @@ export default function KBPage() {
           </Card>
         </Col>
         <Col xs={24} sm={8}>
-          <Card style={{ background: "#1f1f1f", border: "1px solid #2a2a2a" }} bodyStyle={{ padding: 20 }}>
+          <Card style={{ background: "#ffffff", border: "1px solid #e5e7eb", borderRadius: 10 }} styles={{ body: { padding: 20 } }}>
             <Typography.Text type="secondary" style={{ fontSize: 13 }}>
               就绪率
             </Typography.Text>
@@ -121,21 +122,20 @@ export default function KBPage() {
 
       {/* 文档列表 */}
       <Card
-        title={<span style={{ color: "#fff" }}>文档列表</span>}
+        title={<span>文档列表</span>}
         extra={
           <Upload>
-            <Button type="primary" icon={<UploadOutlined />} style={{ background: "#1677ff" }}>
+            <Button type="primary" icon={<UploadOutlined />}>
               上传文档
             </Button>
           </Upload>
         }
-        style={{ background: "#1f1f1f", border: "1px solid #2a2a2a" }}
+        style={{ background: "#ffffff", border: "1px solid #e5e7eb", borderRadius: 10 }}
       >
         <Table<DocItem>
           columns={columns}
           dataSource={MOCK_DOCS}
           pagination={false}
-          style={{ background: "transparent" }}
         />
       </Card>
     </div>

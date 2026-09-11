@@ -9,6 +9,8 @@ export const metadata: Metadata = {
   description: "高定 SaaS 智能客服管理后台",
 };
 
+import ThemeClientProvider from "@/components/ThemeClientProvider";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -16,22 +18,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="zh-CN">
-      <body style={{ background: "#141414", margin: 0 }}>
+      <body style={{ background: "#f0f2f5", margin: 0, color: "#1f1f1f" }}>
         <AntdRegistry>
-          <ConfigProvider
-            theme={{
-              algorithm: [theme.darkAlgorithm, theme.compactAlgorithm],
-              token: {
-                colorPrimary: "#1677ff",
-                colorBgBase: "#141414",
-                colorBgContainer: "#1f1f1f",
-                borderRadius: 8,
-                colorBgElevated: "#1f1f1f",
-              },
-            }}
-          >
-            {children}
-          </ConfigProvider>
+          <ThemeClientProvider>{children}</ThemeClientProvider>
         </AntdRegistry>
       </body>
     </html>

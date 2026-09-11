@@ -2,7 +2,8 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8001";
 const WS_URL = process.env.NEXT_PUBLIC_WS_URL ?? "ws://localhost:8001";
 
-export function getAuthHeaders() {
+export function getAuthHeaders(): Record<string, string> {
+  if (typeof window === "undefined") return {};
   const token = localStorage.getItem("token");
   return token ? { Authorization: `Bearer ${token}` } : {};
 }

@@ -1,3 +1,9 @@
+/**
+ * [变更日志]
+ * 修改时间：2026-09-12
+ * AI模型：Gemini 系列
+ * 修改内容：[1. 登录成功后在 localStorage 中补充持久化存储 user_id 与 user_name，为双向 WebSocket 建立身份绑定]
+ */
 // 登录页：手机号 + 密码，对接后端 /api/auth/login
 "use client";
 import { useState } from "react";
@@ -17,6 +23,8 @@ export default function LoginPage() {
     try {
       const res = await login(values.phone, values.password);
       setToken(res.access_token);
+      localStorage.setItem("user_id", String(res.user_id));
+      localStorage.setItem("user_name", res.name);
       message.success(`欢迎回来，${res.name}`);
       router.push("/");
     } catch (e: any) {
