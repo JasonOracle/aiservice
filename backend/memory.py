@@ -1,4 +1,9 @@
 """
+[变更日志]
+修改时间：2026-09-12
+AI模型：Deepseek-V4.1-Flash
+修改内容：[修复 init_memory 冷启动记忆被逐字符拆分的严重 Bug——原代码直接遍历 traits.replace(...) 返回的字符串，导致每个汉字各存为一条记忆，用户画像注入 LLM 时变成乱码；现改为按标点 split 后再入库]
+
 Mem0 记忆管理器
 - 轻量实现：使用 SQLite 存储用户长期记忆（MVP 模式）
 - 支持冷启动：从 User.traits 字段初始化
@@ -44,12 +49,21 @@ class MemoryManager:
 
     @staticmethod
     def init_memory(user_id: int, traits: str):
-        """冷启动：将用户特征拆分为多条记忆"""
+        """冷启动：将用户特征按标点拆分为多条记忆"""
         with _lock:
             conn = _get_conn()
             try:
-                # 按中文逗号/顿号/句号拆分特征
-                parts = [p.strip() for p in traits.replace("，", ",").replace("、", ",").replace("。", ",") if p.strip()]
+                # 统一各种中文标点为英文逗号后再 split。
+                # 注意：必须先 split 再遍历结果列表，
+                # 若直接遍历 replace() 返回的字符串，会退化为逐字符入库（每个汉字一条记忆）。
+                normalized = (
+                    traits.replace("，", ",")
+                    .replace("、", ",")
+                    .replace("。", ",")
+                    .replace("；", ",")
+                    .replace(";", ",")
+                )
+                parts = [p.strip() for p in normalized.split(",") if p.strip()]
                 for fact in parts:
                     conn.execute(
                         "INSERT OR IGNORE INTO memories (user_id, fact) VALUES (?, ?)",

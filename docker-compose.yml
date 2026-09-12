@@ -5,6 +5,13 @@ services:
     build: ./backend
     ports:
       - "8080:8000"
+    env_file:
+      # 项目根 .env —— 模型 API Key（XIAO_HONG_SHU_API_KEY 等）的权威来源。
+      # required: false —— .env 已被 gitignore，新克隆的仓库不会有该文件，
+      # 缺失时不应导致 compose 启动失败（此时 /api/health 会返回 llm_configured=false）。
+      # 注：下方 environment 段优先级更高，会覆盖同名变量。
+      - path: .env
+        required: false
     environment:
       - DATABASE_URL=sqlite:///./data/app.db
       - UPLOAD_DIR=/app/uploads

@@ -1,31 +1,31 @@
-// 双端异构渲染容器 + 认证守卫
-// 根据 User-Agent 动态加载 MobileView 或 DesktopView
+/**
+ * [变更日志]
+ * 修改时间：2026-09-12
+ * AI模型：Deepseek-V4.1-Flash
+ * 修改内容：[设备判定逻辑抽到 lib/useDevice（与商品详情页共用同一份实现），并接入品牌主题色]
+
+ * C 端主壳：双端异构渲染 + 认证守卫
+ * - 移动 UA / 窄视口 → MobileView；其余 → DesktopView
+ */
 "use client";
 
 import { Suspense, lazy, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Spin } from "antd";
+import { useDevice } from "@/lib/useDevice";
+import { BRAND } from "@/lib/theme";
 
 const MobileView = lazy(() => import("@/components/views/MobileView"));
 const DesktopView = lazy(() => import("@/components/views/DesktopView"));
 
-function detectDevice(): "mobile" | "desktop" {
-  if (typeof window === "undefined") return "desktop";
-  const ua = window.navigator.userAgent;
-  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
-  const isNarrow = window.innerWidth < 768;
-  return isMobile || isNarrow ? "mobile" : "desktop";
-}
-
 export default function AdaptiveShell() {
   const router = useRouter();
+  const device = useDevice();
   const [mounted, setMounted] = useState(false);
   const [hasToken, setHasToken] = useState(false);
-  const [device, setDevice] = useState<"mobile" | "desktop">("desktop");
 
   useEffect(() => {
     setMounted(true);
-    setDevice(detectDevice());
     const token = localStorage.getItem("token");
     if (!token) {
       router.replace("/login");
@@ -36,30 +36,47 @@ export default function AdaptiveShell() {
 
   if (!mounted) {
     return (
-      <div style={{ height: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#f8f9fa" }}>
+      <Centered>
         <Spin size="large" />
-      </div>
+      </Centered>
     );
   }
 
   if (!hasToken) {
     return (
-      <div style={{ height: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", background: "#0f0f1a", color: "#fff" }}>
+      <Centered>
         <Spin size="large" />
-        <div style={{ marginTop: 16, color: "#888" }}>正在跳转至登录页面...</div>
-      </div>
+        <div style={{ marginTop: 16, color: BRAND.textSub }}>正在跳转至登录页面…</div>
+      </Centered>
     );
   }
 
   return (
     <Suspense
       fallback={
-        <div style={{ height: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#f8f9fa" }}>
+        <Centered>
           <Spin size="large" />
-        </div>
+        </Centered>
       }
     >
       {device === "mobile" ? <MobileView /> : <DesktopView />}
     </Suspense>
+  );
+}
+
+function Centered({ children }: { children: React.ReactNode }) {
+  return (
+    <div
+      style={{
+        height: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        background: BRAND.bg,
+      }}
+    >
+      {children}
+    </div>
   );
 }

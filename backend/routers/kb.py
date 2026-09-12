@@ -1,4 +1,9 @@
 """
+[变更日志]
+修改时间：2026-09-12
+AI模型：Deepseek-V4.1-Flash
+修改内容：[修复 /api/kb/stats 切片数恒为 0 的问题（原为 size//500 估算并残留无效表达式），改为调用 RAGEngine.total_chunks() 精确统计]
+
 知识库路由：/api/kb
 - 文档上传（MVP 支持 TXT，PDF/Word 需要额外依赖）
 - 文档列表
@@ -38,11 +43,9 @@ class SearchResult(BaseModel):
 
 @router.get("/kb/stats", response_model=KBStats)
 def kb_stats():
-    """获取知识库统计信息"""
+    """获取知识库统计信息（文档总数 + 切片总数）"""
     docs = RAGEngine.list_documents()
-    total_chunks = sum(RAGEngine._chunk_text(d.get("content", "")).count("\n") + 1 if False else 0 for d in docs)
-    # MVP：简单返回文档数，chunk 数后续精确计算
-    return KBStats(total_docs=len(docs), total_chunks=sum(d.get("size", 0) // 500 for d in docs))
+    return KBStats(total_docs=len(docs), total_chunks=RAGEngine.total_chunks())
 
 
 @router.get("/kb/docs", response_model=list[DocMeta])

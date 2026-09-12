@@ -1,3 +1,13 @@
+/**
+ * [变更日志]
+ * 修改时间：2026-09-12
+ * AI模型：Deepseek-V4.1-Flash
+ * 修改内容：[补齐上一轮改色遗漏：顶部 Hero 区域的渐变与投影仍为 antd 蓝（#1677ff → #0958d9），统一改为与全局一致的品牌橙渐变]
+ *
+ * 修改时间：2026-09-12
+ * AI模型：Deepseek-V4.1-Flash
+ * 修改内容：[Hero 渐变与主色由 antd 蓝统一为品牌橙，与 C 端商城视觉一致]
+ */
 // 知识库大盘 - Hero 区域 + 指标卡片 + 文档列表
 "use client";
 import { Card, Row, Col, Button, Table, Typography, Upload, Tag } from "antd";
@@ -35,7 +45,7 @@ const columns: ColumnsType<DocItem> = [
         {record.type === "pdf" ? (
           <FilePdfOutlined style={{ color: "#ff4d4f" }} />
         ) : (
-          <FileWordOutlined style={{ color: "#1677ff" }} />
+          <FileWordOutlined style={{ color: "#FF6A00" }} />
         )}
         <span style={{ color: "#1f1f1f", fontWeight: 500 }}>{name}</span>
       </span>
@@ -74,12 +84,12 @@ export default function KBPage() {
       {/* Hero 区域 */}
       <div
         style={{
-          background: "linear-gradient(135deg, #1677ff 0%, #0958d9 100%)",
+          background: "linear-gradient(135deg, #FF8A3D 0%, #FF6A00 55%, #E8480A 100%)",
           borderRadius: 12,
           padding: "28px 24px",
           marginBottom: 20,
           color: "#fff",
-          boxShadow: "0 4px 12px rgba(22,119,255,0.15)",
+          boxShadow: "0 4px 12px rgba(255,106,0,0.22)",
         }}
       >
         <Typography.Title level={3} style={{ color: "#fff", margin: 0 }}>
@@ -97,7 +107,7 @@ export default function KBPage() {
             <Typography.Text type="secondary" style={{ fontSize: 13 }}>
               文档总数
             </Typography.Text>
-            <div style={{ fontSize: 32, fontWeight: 700, color: "#1677ff" }}>{totalDocs}</div>
+            <div style={{ fontSize: 32, fontWeight: 700, color: "#FF6A00" }}>{totalDocs}</div>
           </Card>
         </Col>
         <Col xs={24} sm={8}>

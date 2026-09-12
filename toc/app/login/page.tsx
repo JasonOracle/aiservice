@@ -1,22 +1,36 @@
 /**
  * [变更日志]
  * 修改时间：2026-09-12
- * AI模型：Gemini 系列
- * 修改内容：[1. 登录成功后在 localStorage 中补充持久化存储 user_id 与 user_name，为双向 WebSocket 建立身份绑定]
+ * AI模型：Deepseek-V4.1-Flash
+ * 修改内容：[登录页视觉由深色玻璃拟态改为与 C 端商城统一的橙色系；新增演示账号一键填充，便于快速切换 10 个种子用户验证「千人千面」；修正 antd 已废弃的 bodyStyle 用法]
+
+ * 登录页：手机号 + 密码，对接后端 /api/auth/login
  */
-// 登录页：手机号 + 密码，对接后端 /api/auth/login
 "use client";
+
 import { useState } from "react";
-import { Form, Input, Button, Card, Typography, message } from "antd";
+import { Form, Input, Button, Typography, message } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
 import { login } from "@/lib/api";
 import { useAuth } from "@/components/hooks/useAuth";
+import { BRAND } from "@/lib/theme";
+
+/** 演示账号（密码统一 123456），点击即可填充 */
+const DEMO_ACCOUNTS = [
+  { phone: "13800000001", name: "张伟", role: "程序员" },
+  { phone: "13800000002", name: "李娜", role: "美妆达人" },
+  { phone: "13800000003", name: "王强", role: "健身教练" },
+  { phone: "13800000004", name: "赵敏", role: "新手宝妈" },
+  { phone: "13800000008", name: "吴婷", role: "铲屎官" },
+  { phone: "13800000009", name: "孙斌", role: "品茶大叔" },
+];
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { login: setToken } = useAuth();
+  const [form] = Form.useForm<{ phone: string; password: string }>();
 
   const handleFinish = async (values: { phone: string; password: string }) => {
     setLoading(true);
@@ -27,8 +41,9 @@ export default function LoginPage() {
       localStorage.setItem("user_name", res.name);
       message.success(`欢迎回来，${res.name}`);
       router.push("/");
-    } catch (e: any) {
-      message.error(e.message ?? "登录失败，请检查账号密码");
+    } catch (e) {
+      const err = e as Error;
+      message.error(err.message ?? "登录失败，请检查账号密码");
     } finally {
       setLoading(false);
     }
@@ -37,76 +52,148 @@ export default function LoginPage() {
   return (
     <div
       style={{
-        height: "100dvh",
+        minHeight: "100dvh",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        background: "linear-gradient(135deg, #0f0f1a 0%, #1a1a3e 50%, #0f0f1a 100%)",
-        padding: 16,
+        background: BRAND.gradient,
+        padding: 20,
       }}
     >
-      <Card
+      <div
         style={{
           width: "100%",
-          maxWidth: 380,
-          borderRadius: 16,
-          background: "rgba(255,255,255,0.06)",
-          backdropFilter: "blur(16px)",
-          border: "1px solid rgba(255,255,255,0.12)",
+          maxWidth: 880,
+          background: "#fff",
+          borderRadius: 20,
+          overflow: "hidden",
+          display: "flex",
+          boxShadow: "0 24px 60px rgba(120,50,0,0.28)",
         }}
-        bodyStyle={{ padding: 32 }}
       >
-        <Typography.Title
-          level={3}
-          style={{ color: "#fff", textAlign: "center", marginBottom: 8 }}
+        {/* 左：品牌介绍 */}
+        <div
+          style={{
+            flex: 1,
+            padding: "44px 38px",
+            background: "linear-gradient(160deg, #FFF6EE 0%, #FFE9D8 100%)",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            gap: 14,
+            minWidth: 300,
+          }}
         >
-          AI 客服
-        </Typography.Title>
-        <Typography.Text style={{ color: "rgba(255,255,255,0.5)", textAlign: "center", display: "block", marginBottom: 24 }}>
-          请输入手机号和密码登录
-        </Typography.Text>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <span
+              style={{
+                width: 36,
+                height: 36,
+                borderRadius: 11,
+                background: BRAND.gradient,
+                color: "#fff",
+                fontWeight: 800,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: 16,
+              }}
+            >
+              AI
+            </span>
+            <span style={{ fontSize: 20, fontWeight: 800, color: BRAND.text }}>AI 商城</span>
+          </div>
+          <div style={{ fontSize: 24, fontWeight: 800, color: BRAND.text, lineHeight: 1.35 }}>
+            智能客服 · 千人千面
+          </div>
+          <div style={{ fontSize: 13, color: "#6E6259", lineHeight: 1.9 }}>
+            登录后即可体验 10 家官方店铺商品，
+            <br />
+            AI 客服基于知识库作答，可随时转接人工。
+          </div>
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 6 }}>
+            {["RAG 溯源", "Mem0 记忆", "人工接管"].map((t) => (
+              <span
+                key={t}
+                style={{
+                  fontSize: 11,
+                  color: BRAND.primary,
+                  background: "#fff",
+                  border: "1px solid #FFDCC0",
+                  borderRadius: 999,
+                  padding: "3px 10px",
+                }}
+              >
+                {t}
+              </span>
+            ))}
+          </div>
+        </div>
 
-        <Form layout="vertical" onFinish={handleFinish} size="large">
-          <Form.Item
-            name="phone"
-            rules={[{ required: true, message: "请输入手机号" }]}
-          >
-            <Input
-              prefix={<UserOutlined style={{ color: "rgba(255,255,255,0.4)" }} />}
-              placeholder="手机号"
-              style={{ background: "rgba(255,255,255,0.08)", color: "#fff", border: "1px solid rgba(255,255,255,0.15)" }}
-              data-attr="dark"
-            />
-          </Form.Item>
+        {/* 右：登录表单 */}
+        <div style={{ flex: 1, padding: "44px 38px", minWidth: 320 }}>
+          <Typography.Title level={4} style={{ marginBottom: 4, color: BRAND.text }}>
+            欢迎登录
+          </Typography.Title>
+          <Typography.Text style={{ color: BRAND.textSub, fontSize: 13 }}>
+            请输入手机号和密码
+          </Typography.Text>
 
-          <Form.Item
-            name="password"
-            rules={[{ required: true, message: "请输入密码" }]}
-          >
-            <Input.Password
-              prefix={<LockOutlined style={{ color: "rgba(255,255,255,0.4)" }} />}
-              placeholder="密码"
-              style={{ background: "rgba(255,255,255,0.08)", color: "#fff", border: "1px solid rgba(255,255,255,0.15)" }}
-            />
-          </Form.Item>
+          <Form form={form} layout="vertical" onFinish={handleFinish} size="large" style={{ marginTop: 22 }}>
+            <Form.Item name="phone" rules={[{ required: true, message: "请输入手机号" }]}>
+              <Input prefix={<UserOutlined style={{ color: "#C6B9AE" }} />} placeholder="手机号" />
+            </Form.Item>
 
-          <Button
-            type="primary"
-            htmlType="submit"
-            block
-            loading={loading}
-            style={{ borderRadius: 8, height: 44 }}
-          >
-            登录
-          </Button>
-        </Form>
+            <Form.Item name="password" rules={[{ required: true, message: "请输入密码" }]}>
+              <Input.Password prefix={<LockOutlined style={{ color: "#C6B9AE" }} />} placeholder="密码" />
+            </Form.Item>
 
-        <Typography.Paragraph
-          style={{ color: "rgba(255,255,255,0.35)", textAlign: "center", marginTop: 16, fontSize: 12 }}
-        >
-          演示账号：13800000001 / 123456
-        </Typography.Paragraph>
-      </Card>
+            <Button
+              type="primary"
+              htmlType="submit"
+              block
+              loading={loading}
+              style={{
+                height: 46,
+                borderRadius: 11,
+                background: BRAND.gradient,
+                border: "none",
+                fontWeight: 700,
+                fontSize: 15,
+                boxShadow: "0 6px 18px rgba(255,106,0,0.3)",
+              }}
+            >
+              登录
+            </Button>
+          </Form>
+
+          <div style={{ marginTop: 24 }}>
+            <div style={{ fontSize: 12, color: BRAND.textSub, marginBottom: 8 }}>
+              演示账号（密码均为 123456，点击填充）
+            </div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+              {DEMO_ACCOUNTS.map((a) => (
+                <button
+                  key={a.phone}
+                  type="button"
+                  onClick={() => form.setFieldsValue({ phone: a.phone, password: "123456" })}
+                  style={{
+                    border: `1px solid ${BRAND.border}`,
+                    background: "#FDFAF7",
+                    borderRadius: 8,
+                    padding: "5px 10px",
+                    fontSize: 12,
+                    color: BRAND.text,
+                    cursor: "pointer",
+                  }}
+                >
+                  {a.name} · {a.role}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

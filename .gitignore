@@ -26,6 +26,9 @@ yarn-error.log*
 .DS_Store
 Thumbs.db
 
+# AI 工作区数据（工作日志/备忘等本地运行时产物，不应提交）
+.workbuddy/
+
 # 本地测试上传文件与数据库
 backend/data/
 backend/uploads/
@@ -38,3 +41,6 @@ __pycache__/
 backend/app/data/mem0/
 mem0_backup.zip
 *.zip
+
+# 本地临时文件（下划线开头，不应提交）
+_*.txt
