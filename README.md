@@ -21,12 +21,12 @@
 
 本系统已实现 **全链路云原生生产化托管**，零服务器费用运行于全球高可用边缘计算网络：
 
-| 端口 | 访问地址 | 说明 / 体验账号 | 托管平台 |
+| 端口 / 模块 | 访问地址 | 说明 / 体验账号 | 托管平台 |
 | :--- | :--- | :--- | :--- |
-| **🛍️ C端顾客商城 (PC / 移动自适应)** | [https://aiservice-toc.pages.dev](https://aiservice-toc.pages.dev) | 测试账号：`13800000001`，密码：`123456` | **Cloudflare Pages** |
-| **🎧 B端坐席工作台** | [https://aiservice-tob.pages.dev](https://aiservice-tob.pages.dev) | 管理访问口令：`admin123` | **Cloudflare Pages** |
-| **⚡ 后端 API / WebSocket 中枢** | `https://aiservice-backend.onrender.com` | `/docs` 交互式 Swagger API 文档 | **Render (Singapore)** |
-| **🗄️ 分布式关系与向量数据库** | *TiDB Cloud Serverless (AWS Singapore)* | 100% MySQL 8.0 兼容云端底座 | **TiDB Cloud** |
+| **🎧 B端坐席工作台** | [AI 客服 MVP - 管理员后台](https://aiservice-tob.pages.dev/) | 管理访问口令：`admin123` | **Cloudflare Pages** |
+| **🛍️ C端顾客商城 (PC / 移动自适应)** | [AI 商城 · 智能客服 (键盘商品直达)](https://aiservice-toc.pages.dev/product/keyboard-k8pro) | 测试账号：`13800000001`，密码：`123456`（亦可访问 [首页](https://aiservice-toc.pages.dev)） | **Cloudflare Pages** |
+| **⚡ 后端 API / WebSocket 中枢** | `https://aiservice-backend.onrender.com` | Swagger 交互式文档：`/docs` | **Render (Singapore)** |
+| **🗄️ 分布式关系与向量数据库** | `gateway01.ap-southeast-1.prod.aws.tidbcloud.com:4000` | 100% MySQL 8.0 兼容，库名 `test` | **TiDB Cloud Serverless** |
 
 ---
 

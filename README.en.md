@@ -22,12 +22,12 @@
 
 This system is fully deployed in a **cloud-native, serverless production architecture** with zero infrastructure cost:
 
-| Service | Live URL | Credentials / Notes | Platform |
+| Service / Module | Live URL | Credentials / Notes | Platform |
 | :--- | :--- | :--- | :--- |
-| **🛍️ C-End E-Commerce (PC & Mobile)** | [https://aiservice-toc.pages.dev](https://aiservice-toc.pages.dev) | Account: `13800000001`, Password: `123456` | **Cloudflare Pages** |
-| **🎧 B-End Agent Workbench** | [https://aiservice-tob.pages.dev](https://aiservice-tob.pages.dev) | Admin Passcode: `admin123` | **Cloudflare Pages** |
-| **⚡ Backend API & WebSocket Hub** | `https://aiservice-backend.onrender.com` | `/docs` Interactive Swagger API | **Render (Singapore)** |
-| **🗄️ Distributed Cloud Database** | *TiDB Cloud Serverless (AWS Singapore)* | 100% MySQL 8.0 Protocol Compatible | **TiDB Cloud** |
+| **🎧 B-End Agent Workbench** | [AI Customer Service - Admin Console](https://aiservice-tob.pages.dev/) | Admin Passcode: `admin123` | **Cloudflare Pages** |
+| **🛍️ C-End Store WebApp** | [AI Store · Smart Service (Direct Product Chat)](https://aiservice-toc.pages.dev/product/keyboard-k8pro) | Account: `13800000001`, Pass: `123456` (or visit [Home](https://aiservice-toc.pages.dev)) | **Cloudflare Pages** |
+| **⚡ Backend API & WebSocket Hub** | `https://aiservice-backend.onrender.com` | Swagger Interactive API: `/docs` | **Render (Singapore)** |
+| **🗄️ Distributed Cloud Database** | `gateway01.ap-southeast-1.prod.aws.tidbcloud.com:4000` | 100% MySQL 8.0 Protocol Compatible, DB: `test` | **TiDB Cloud Serverless** |
 
 ---
 
