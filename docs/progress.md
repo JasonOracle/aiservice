@@ -401,7 +401,30 @@
 
 **遗留**
 - 截图为演示数据态；`seed_demo.py` 与真实业务数据无冲突，可重复执行。
-- 演示会话（8 位客户）保留在库中用作展示；如需清空，按 `conversation_id` 前缀删除即可。
+### Phase 13: 云端全栈生产化部署与求职级 README 重构 (2026-09-14 追加)
+
+**目标**：彻底脱离纯本地运行限制，打通「TiDB Cloud 分布式云数据库 + Render 异步全双工后端 + Cloudflare Pages 双端前端」的零成本云原生托管架构，并重构面向面试官的硬核求职级 `README.md`。
+
+**交付物**
+1. **TiDB Cloud Serverless (AWS Singapore)**：
+   - 生产数据库打通，100% 兼容 MySQL 8.0 协议；
+   - 成功执行表结构初始化（`users`, `conversations`, `messages`, `settings`）；
+   - 自动灌入 10 位演示种子用户账号。
+2. **Render Web Service 后端**：
+   - Python 3.11 原生环境运行，成功挂载 TiDB 云库，提供稳定的 HTTPS API 与常驻全双工 WSS 连接；
+   - 公网接口健康检查 `GET /api/health` 200 响应。
+3. **Cloudflare Pages 前端双端**：
+   - `aiservice-toc.pages.dev`（C 端商城），支持 PC/移动自适应；
+   - `aiservice-tob.pages.dev`（B 端智能坐席工作台），集成 `@ant-design/x`。
+4. **`README.md` 全面重构**：
+   - 融入 `docs/产品介绍.md` 核心精髓与 16 张真实环境运行截图；
+   - 提炼四大核心技术亮点与面试高频剖析（Vision 多模态 Base64 穿透、RAG 切词加权与拒答高压线、复合主键会话模型、双层 AI 托管状态机与 Never-throw 存储设计）。
+
+**测试标准 (DoD)**
+- [x] TiDB Cloud 远程直连成功，表结构与种子数据注入完毕。
+- [x] Render 后端部署上线，成功接管 TiDB 数据库。
+- [x] Cloudflare 双端配置与构建指令配置完毕。
+- [x] 根目录 `README.md` 重构交付，技术亮点与面试引导清晰完备。
 
 ---
 
@@ -411,3 +434,4 @@
 2. **防沉迷日志**：每一个关键组件的顶部，必须添加中文的变动日志（如修改时间、修改人、修改逻辑）。
 3. **自测闭环**：如果不确定一个命令是否有效，先自己写个脚本测一下，不要让主进程崩溃。
 4. **清理副作用**：所有的 WebSocket 监听、`useEffect` 轮询，必须有严格的卸载清理 (`cleanup`) 函数，严防内存泄漏！
+
